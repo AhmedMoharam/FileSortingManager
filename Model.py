@@ -1,20 +1,21 @@
 import pandas as pd
 import os
 
-from utils import sub_dirs, sub_file, is_empty_dir, is_similar, move_file_to_dir
+from utils import sub_dirs, sub_file, is_empty_dir, is_similar, move_file_to_dir, find
 
 
-def organize_files_into_sub_folders(files, sub_folders, working_directory, rename_prefix=""):
+def organize_files_into_sub_folders(files, sub_folders, working_directory, rename_prefix=False):
     cwd = os.getcwd()
     if os.path.isdir(working_directory):
         os.chdir(working_directory)
         for file, sub_folder in zip(files, sub_folders):
-            if os.path.isfile(file):
-                move_file_to_dir(file, sub_folder, rename_prefix)
+            file_path = find(file)
+            if file_path is not None:
+                move_file_to_dir(file_path, sub_folder, rename_prefix)
         os.chdir(cwd)
 
 
-def organize_files_using_excel_data(excel_file_path, working_directory, rename_prefix=""):
+def organize_files_using_excel_data(excel_file_path, working_directory, rename_prefix=False):
     xlsx = pd.ExcelFile(excel_file_path)
     sheet = xlsx.parse(0)
     col_a_heading = sheet.keys()[0]

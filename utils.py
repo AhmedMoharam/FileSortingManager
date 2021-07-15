@@ -1,5 +1,6 @@
 import os
 import shutil
+from random import randint
 
 
 def is_nan(x):
@@ -32,21 +33,31 @@ def is_similar(file1, file2):
         return False
 
 
-def move_file_to_dir(file, directory, rename_prefix=""):
-    if is_nan(directory):
-        return
+def move_file_to_dir(file, directory: str, rename_prefix=False):
+    try:
+        basename = os.path.basename(file)
+        if rename_prefix:
+            new_file_name = str(randint(000, 999)).zfill(3) + '_' + basename
+        else:
+            new_file_name = basename
 
-    basename = os.path.basename(file)
-    if rename_prefix:
-        new_file_name = rename_prefix + basename
-    else:
-        new_file_name = basename
+        if os.path.isfile(os.path.join(directory, new_file_name)):
+            return
 
-    if os.path.isdir(directory):
+        if not os.path.isdir(directory):
+            os.mkdir(directory)
+
         shutil.move(file, os.path.join(directory, new_file_name))
-    else:
-        os.mkdir(directory)
-        shutil.move(file, os.path.join(directory, new_file_name))
+    except:
+        move_file_to_dir(file, 'Unsorted', rename_prefix)
+        pass
+
+
+def find(name, path='.'):
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+    return None
 
 
 def touch_files(working_directory, count):
