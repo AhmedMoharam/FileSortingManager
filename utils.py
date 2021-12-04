@@ -2,6 +2,8 @@ import os
 import shutil
 from random import randint
 
+names = dict()
+
 
 def is_nan(x):
     return x != x
@@ -37,7 +39,16 @@ def move_file_to_dir(file, directory: str, rename_prefix=False):
     try:
         basename = os.path.basename(file)
         if rename_prefix:
-            new_file_name = str(randint(000, 999)).zfill(3) + '_' + basename
+            prefix = ""
+            if '.' in basename:
+                if basename.rpartition('.')[0] in names:
+                    prefix = names[basename.rpartition('.')[0]]
+                else:
+                    prefix = str(randint(000, 999)).zfill(3)
+                    names[basename.rpartition('.')[0]] = prefix
+            else:
+                prefix = str(randint(000, 999)).zfill(3)
+            new_file_name = prefix + '_' + basename
         else:
             new_file_name = basename
 

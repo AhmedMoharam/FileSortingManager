@@ -12,6 +12,21 @@ def organize_files_into_sub_folders(files, sub_folders, working_directory, renam
             file_path = find(file)
             if file_path is not None:
                 move_file_to_dir(file_path, sub_folder, rename_prefix)
+                try:
+                    basename = os.path.basename(file_path)
+                    if '.' in basename:
+                        if basename.rpartition('.')[2] == 'eps':
+                            similar_file = basename.rpartition('.')[0] + '.jpg'
+                            similar_file_path = find(similar_file)
+                            if similar_file_path is not None:
+                                move_file_to_dir(similar_file_path, sub_folder, rename_prefix)
+                        elif basename.rpartition('.')[2] == 'jpg':
+                            similar_file = basename.rpartition('.')[0] + '.jpg'
+                            similar_file_path = find(similar_file)
+                            if similar_file_path is not None:
+                                move_file_to_dir(similar_file_path, sub_folder, rename_prefix)
+                except:
+                    pass
         os.chdir(cwd)
 
 
